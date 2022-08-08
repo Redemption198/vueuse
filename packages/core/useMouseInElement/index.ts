@@ -1,11 +1,11 @@
 import { ref, watch } from 'vue-demi'
 import type { MaybeElementRef } from '../unrefElement'
 import { unrefElement } from '../unrefElement'
-import type { MouseOptions } from '../useMouse'
+import type { UseMouseOptions } from '../useMouse'
 import { useMouse } from '../useMouse'
 import { defaultWindow } from '../_configurable'
 
-export interface MouseInElementOptions extends MouseOptions {
+export interface MouseInElementOptions extends UseMouseOptions {
   handleOutside?: boolean
 }
 
@@ -33,7 +33,7 @@ export function useMouseInElement(
   const elementPositionY = ref(0)
   const elementHeight = ref(0)
   const elementWidth = ref(0)
-  const isOutside = ref(false)
+  const isOutside = ref(true)
 
   let stop = () => {}
 
@@ -59,7 +59,9 @@ export function useMouseInElement(
 
         const elX = x.value - elementPositionX.value
         const elY = y.value - elementPositionY.value
-        isOutside.value = elX < 0 || elY < 0 || elX > elementWidth.value || elY > elementHeight.value
+        isOutside.value = width === 0 || height === 0
+          || elX < 0 || elY < 0
+          || elX > width || elY > height
 
         if (handleOutside || !isOutside.value) {
           elementX.value = elX
